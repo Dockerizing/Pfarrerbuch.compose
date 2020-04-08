@@ -25,6 +25,18 @@ nginx:
     - "8080:80"
 
 ontowiki:
-  image: aksw/ontowiki
+  image: pfarrerbuch-dockerizing:local
+  container_name: pfarrerbuch
+  environment:
+    - DEBIAN_FRONTEND=noninteractive,
+    - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+    - MODEL_REPO=$MODEL_REPO
+    - VIRTUAL_HOST=$VIRTUAL_HOST
+    - OW_SITE_MODEL=$OW_SITE_MODEL
+  volumes:
+    - $SSH_AUTH_SOCK:/var/run/ssh-agent.sock
+    - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
+    - /data/pfarrerbuch/models:/models
   links:
     - virtuoso
