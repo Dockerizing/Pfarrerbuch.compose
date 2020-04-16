@@ -52,14 +52,20 @@ volumes:
     data: {}
     lib: {}
     ssh:
-        driver: local-persist
+        driver: local
         driver_opts:
-            mountpoint: $SSH_AUTH_SOCK
+            type: none
+            device: $SSH_AUTH_SOCK
+            o: bind
     knowndriver:
-        driver: local-persist
+        driver: local
         driver_opts:
-            mountpoint: /data/pfarrerbuch/ssh/known_hosts
+            type: none
+            device: /data/pfarrerbuch/ssh/known_hosts
+            o: bind
     models:
-        driver: local-persist
+        driver: local
         driver_opts:
-            mountpoint: /data/pfarrerbuch/models
+            type: none
+            device: /data/pfarrerbuch/models
+            o: bind
