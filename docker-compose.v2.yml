@@ -3,8 +3,9 @@ version: '2'
 services:
     virtuoso:
       image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      env_file:
+        - variables.env
       environment:
-        DBA_PASSWORD: dba
         SPARQL_UPDATE: "true"
       volumes:
         - data:/data
@@ -30,13 +31,8 @@ services:
     ontowiki:
       image: pfarrerbuch-dockerizing:local
       container_name: pfarrerbuch
-      environment:
-        - DEBIAN_FRONTEND=noninteractive,
-        - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
-        - MODEL_REPO=$MODEL_REPO
-        - VIRTUAL_HOST=$VIRTUAL_HOST
-        - OW_SITE_MODEL=$OW_SITE_MODEL
+      env_file:
+        - variables.env
       volumes:
         - $SSH_AUTH_SOCK:/var/run/ssh-agent.sock
         - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
@@ -46,4 +42,3 @@ services:
 volumes:
     data: {}
     lib: {}
-    
