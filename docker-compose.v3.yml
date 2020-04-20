@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+    virtuoso:
+      image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      environment:
+        DBA_PASSWORD: dba
+        SPARQL_UPDATE: "true"
+      volumes:
+        - data:/data
+        - lib:/usr/local/virtuoso-opensource/lib
+
+    phpserver:
+      image: aksw/php-5.6-fpm-odbc-virtuoso
+      volumes:
+        - data
+        - lib
+        - ssh
+        - knowndriver
+        - models
+      links:
+        - virtuoso
+
+    nginx:
+      image: aksw/nginx-ontowiki
+      volumes:
+        - ssh
+        - knowndriver
+        - models
+      links:
+        - phpserver
+      ports:
+        - "8080:80"
+
+    ontowiki:
+      image: pfarrerbuch-dockerizing:local
+      container_name: pfarrerbuch
+      environment:
+        - DEBIAN_FRONTEND=noninteractive,
+        - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+        - MODEL_REPO=$MODEL_REPO
+        - VIRTUAL_HOST=$VIRTUAL_HOST
+        - OW_SITE_MODEL=$OW_SITE_MODEL
+      volumes:
+        - ssh:/var/run/ssh-agent.sock
+        - knowndriver:/root/.ssh/known_hosts
+        - models:/models
+      links:
+        - virtuoso
+volumes:
+    data: {}
+    lib: {}
+    ssh:
+        driver: local
+        driver_opts:
+            type: none
+            device: $SSH_AUTH_SOCK
+            o: bind
+    knowndriver:
+        driver: local
+        driver_opts:
+            type: none
+            device: /data/pfarrerbuch/ssh/known_hosts
+            o: bind
+    models:
+        driver: local
+        driver_opts:
+            type: none
+            device: /data/pfarrerbuch/models
+            o: bind
