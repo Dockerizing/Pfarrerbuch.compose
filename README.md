@@ -16,3 +16,34 @@ If you already have a running docker daemon and docker-compose just clone this r
     docker-compose up
 
 inside the directory. The OntoWiki setup is available at `http://localhost:8080/`.
+
+## Variables
+
+Are stored in the file `variables.env`.
+
+## Volumes
+
+Because the `volumes_from` was removed in docker-compoese v2 sit setup now uses v3 kind of volumes. Currently is feels like magic, because the docker-compose file does not represent from where the volume data is mounted to where. So I give a small overview here.
+
+`ontowiki` provides the OntoWiki PHP code in `/var/www/html` which is mounted to `nginx` and `phpserver`.
+
+`virtuoso` provides the libvirtodbc and other libraries in `/usr/local/virtuoso-opensource/lib` which is mounted to `phpserver`.
+
+The ssh-agent socket, the known_hosts file and the volume `models` should come from the host.
+
+```
+ontowiki
+- /var/www/html ┬─> nginx
+                └─> phpserver
+
+virtuoso
+- /usr/local/virtuoso-opensource/lib ┬─> nginx
+                                     └─> phpserver
+
+HOST
+- ${SSH_AUTH_SOCK} ─> ontowiki
+- /data/pfarrerbuch/ssh/known_hosts (file) ─> ontowiki
+- /data/pfarrerbuch/models ─> as volume models ┬─> ontowiki
+                                               ├─> phpserver
+                                               └─> virtuoso
+```

@@ -3,31 +3,30 @@ version: '3'
 services:
     virtuoso:
       image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      container_name: pfarrerbuch_virtuoso
       env_file:
         - variables.env
       environment:
         SPARQL_UPDATE: "true"
       volumes:
-        - data:/data
-        - lib:/usr/local/virtuoso-opensource/lib
+        - libvirtodbc:/usr/local/virtuoso-opensource/lib
+        - models:/models
 
     phpserver:
       image: aksw/php-5.6-fpm-odbc-virtuoso
+      container_name: pfarrerbuch_php
       volumes:
-        - data
-        - lib
-        - ssh
-        - knowndriver
-        - models
+        - ontowiki:/var/www/html/
+        - libvirtodbc:/usr/local/virtuoso-opensource/lib
+        - models:/models
       links:
         - virtuoso
 
     nginx:
       image: aksw/nginx-ontowiki
+      container_name: pfarrerbuch_nginx
       volumes:
-        - ssh
-        - knowndriver
-        - models
+        - ontowiki:/var/www/html/
       links:
         - phpserver
       ports:
@@ -35,27 +34,19 @@ services:
 
     ontowiki:
       image: pfarrerbuch-dockerizing:local
-      container_name: pfarrerbuch
+      container_name: pfarrerbuch_ontowiki
       env_file:
         - variables.env
-      environment:
-        - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        - SSH_AUTH_SOCK=/var/run/ssh-agent.sock
       volumes:
-        - $SSH_AUTH_SOCK:/var/run/ssh-agent.sock
-        - knowndriver:/root/.ssh/known_hosts
+        - ontowiki:/var/www/html/
         - models:/models
+        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
+        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
       links:
         - virtuoso
 volumes:
-    data: {}
-    lib: {}
-    knowndriver:
-        driver: local
-        driver_opts:
-            type: none
-            device: /data/pfarrerbuch/ssh/known_hosts
-            o: bind
+    libvirtodbc: {}
+    ontowiki: {}
     models:
         driver: local
         driver_opts:
