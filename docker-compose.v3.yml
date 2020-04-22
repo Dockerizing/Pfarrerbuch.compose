@@ -33,7 +33,7 @@ services:
         - "8080:80"
 
     ontowiki:
-      image: pfarrerbuch-dockerizing:local
+      image: aksw/pfarrerbuch-dockerizing
       container_name: pfarrerbuch_ontowiki
       env_file:
         - variables.env
