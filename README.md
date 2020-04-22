@@ -23,7 +23,7 @@ Are stored in the file `variables.env`.
 
 ## Volumes
 
-Because the `volumes_from` was removed in docker-compoese v2 sit setup now uses v3 kind of volumes. Currently is feels like magic, because the docker-compose file does not represent from where the volume data is mounted to where. So I give a small overview here.
+Because the `volumes_from` was removed in docker-compoese v2 sit setup now uses v3 kind of volumes. Currently is feels like magic, because the docker-compose file does not represent from where the volume data is mounted to where. So I give a small overview here. (The information here does not really help, but I put it here for later reference: https://docs.docker.com/compose/compose-file/#volumes.)
 
 `ontowiki` provides the OntoWiki PHP code in `/var/www/html` which is mounted to `nginx` and `phpserver`.
 
