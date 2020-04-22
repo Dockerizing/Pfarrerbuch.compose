@@ -3,6 +3,7 @@ version: '2'
 services:
     virtuoso:
       image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      container_name: pfarrerbuch_virtuoso
       env_file:
         - variables.env
       environment:
@@ -13,6 +14,7 @@ services:
 
     phpserver:
       image: aksw/php-5.6-fpm-odbc-virtuoso
+      container_name: pfarrerbuch_php
       volumes_from:
         - ontowiki
         - virtuoso
@@ -21,6 +23,7 @@ services:
 
     nginx:
       image: aksw/nginx-ontowiki
+      container_name: pfarrerbuch_nginx
       volumes_from:
         - ontowiki
       links:
@@ -30,11 +33,11 @@ services:
 
     ontowiki:
       image: pfarrerbuch-dockerizing:local
-      container_name: pfarrerbuch
+      container_name: pfarrerbuch_ontowiki
       env_file:
         - variables.env
       volumes:
-        - $SSH_AUTH_SOCK:/var/run/ssh-agent.sock
+        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
         - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
         - /data/pfarrerbuch/models:/models
       links:
