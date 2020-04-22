@@ -8,6 +8,9 @@ The compose setup uses:
 
 For using it you have to install [docker](https://www.docker.com/community-edition) and [docker compose](https://docs.docker.com/compose/install/).
 
+To authenticate the container to clone from a remote git repository it expects an ssh-agent running on the host.
+Socket of the host should be specified in the environment variable `SSH_AUTH_SOCK` available during the docker-compose setup.
+
 If you already have a running docker daemon and docker-compose just clone this repository and run
 
     docker-compose up
