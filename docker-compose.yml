@@ -1,42 +1,55 @@
-virtuoso:
-  image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
-  environment:
-    DBA_PASSWORD: dba
-    SPARQL_UPDATE: "true"
-  volumes:
-    - /data
-    - /usr/local/virtuoso-opensource/lib
+version: '3'
 
-phpserver:
-  image: aksw/php-5.6-fpm-odbc-virtuoso
-  volumes_from:
-    - ontowiki
-    - virtuoso
-  links:
-    - virtuoso
+services:
+    virtuoso:
+      image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      container_name: pfarrerbuch_virtuoso
+      env_file:
+        - variables.env
+      environment:
+        SPARQL_UPDATE: "true"
+      volumes:
+        - libvirtodbc:/usr/local/virtuoso-opensource/lib
+        - models:/models
 
-nginx:
-  image: aksw/nginx-ontowiki
-  volumes_from:
-    - ontowiki
-  links:
-    - phpserver
-  ports:
-    - "8080:80"
+    phpserver:
+      image: aksw/php-5.6-fpm-odbc-virtuoso
+      container_name: pfarrerbuch_php
+      volumes:
+        - ontowiki:/var/www/html/
+        - libvirtodbc:/usr/local/virtuoso-opensource/lib
+        - models:/models
+      links:
+        - virtuoso
 
-ontowiki:
-  image: pfarrerbuch-dockerizing:local
-  container_name: pfarrerbuch
-  environment:
-    - DEBIAN_FRONTEND=noninteractive,
-    - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
-    - MODEL_REPO=$MODEL_REPO
-    - VIRTUAL_HOST=$VIRTUAL_HOST
-    - OW_SITE_MODEL=$OW_SITE_MODEL
-  volumes:
-    - $SSH_AUTH_SOCK:/var/run/ssh-agent.sock
-    - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
-    - /data/pfarrerbuch/models:/models
-  links:
-    - virtuoso
+    nginx:
+      image: aksw/nginx-ontowiki
+      container_name: pfarrerbuch_nginx
+      volumes:
+        - ontowiki:/var/www/html/
+      links:
+        - phpserver
+      ports:
+        - "8080:80"
+
+    ontowiki:
+      image: aksw/pfarrerbuch-dockerizing
+      container_name: pfarrerbuch_ontowiki
+      env_file:
+        - variables.env
+      volumes:
+        - ontowiki:/var/www/html/
+        - models:/models
+        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
+        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
+      links:
+        - virtuoso
+volumes:
+    libvirtodbc: {}
+    ontowiki: {}
+    models:
+        driver: local
+        driver_opts:
+            type: none
+            device: /data/pfarrerbuch/models
+            o: bind
