@@ -1,13 +1,14 @@
-version: '3'
+version: '3.7'
 
 services:
     virtuoso:
-      image: tenforce/virtuoso:1.1.0-virtuoso7.2.4
+      image: aksw/virtuoso-backport:v1.1.0-virtuoso7.2.4-patch
       container_name: pfarrerbuch_virtuoso
       env_file:
         - variables.env
       environment:
         SPARQL_UPDATE: "true"
+        VIRT_Parameters_DirsAllowed: "., /usr/local/virtuoso-opensource/share/virtuoso/vad, /models"
       volumes:
         - libvirtodbc:/usr/local/virtuoso-opensource/lib
         - models:/models
@@ -44,6 +45,20 @@ services:
         - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
       links:
         - virtuoso
+
+    importer:
+      image: aksw/dld-load-virtuoso
+      container_name: pfarrerbuch_import
+      # entrypoint: "sleep 10m"
+      depends_on:
+        - "virtuoso"
+      env_file:
+        - variables.env
+      environment:
+        VIRTUOSO_IMPORT_DIR: "/models"
+      volumes:
+        - models:/models
+
 volumes:
     libvirtodbc: {}
     ontowiki: {}
