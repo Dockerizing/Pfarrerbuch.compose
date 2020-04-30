@@ -48,7 +48,7 @@ services:
 
     importer:
       image: aksw/dld-load-virtuoso
-      container_name: pfarrerbuch_import
+      container_name: pfarrerbuch_importer
       # entrypoint: "sleep 10m"
       depends_on:
         - "virtuoso"
