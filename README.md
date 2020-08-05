@@ -12,7 +12,9 @@ The compose setup uses:
 To using it you have to install [docker](https://www.docker.com/community-edition) and [docker-compose](https://docs.docker.com/compose/install/).
 
 To authenticate the container to clone from a remote git repository it expects an ssh-agent running on the host.
-Socket of the host should be specified in the environment variable `SSH_AUTH_SOCK` available during the docker-compose setup.
+The socket of the host should be specified in the environment variable `SSH_AUTH_SOCK` available during the docker-compose setup.
+You can find more information about how to manage the ssh-agent at the end of the document.
+
 
 If you already have a running docker daemon and docker-compose just clone this repository and run
 
@@ -50,3 +52,18 @@ HOST
                                                ├─> phpserver
                                                └─> virtuoso
 ```
+
+## Further information
+
+### How to manage the ssh-agent
+
+Read:
+
+- http://blog.joncairns.com/2013/12/understanding-ssh-agent-and-ssh-add/
+- https://github.com/wwalker/ssh-find-agent
+
+The script should be installed at the end of `~/.bashrc` or `~/.zshrc` .
+
+So start the ssh-agent or get the environment (`$SSH_AUTH_SOCK` and `$SSH_AGENT_PID`) for the currently running agent also the following has to be added to `~/.bashrc` resp. `~/.zshrc`.
+
+    ssh_find_agent -a || eval $(ssh-agent) > /dev/null
