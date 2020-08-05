@@ -47,8 +47,6 @@ services:
       volumes:
         - ontowiki:/var/www/html/
         - models:/models
-        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
-        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
       links:
         - virtuoso
 
@@ -60,17 +58,15 @@ services:
       env_file:
         - variables.env
       environment:
-        VIRTUOSO_IMPORT_DIR: "/models"
+        VIRTUOSO_DATA_DIR: "/models"
+        GIT_DIRECTORY: "/git_models"
       volumes:
         - models:/models
+        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
+        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
       command: /virtuoso/git_import.sh
 
 volumes:
     libvirtodbc: {}
     ontowiki: {}
-    models:
-        driver: local
-        driver_opts:
-            type: none
-            device: /data/pfarrerbuch/models
-            o: bind
+    models: {}
