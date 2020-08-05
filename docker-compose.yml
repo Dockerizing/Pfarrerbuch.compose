@@ -63,6 +63,7 @@ services:
         VIRTUOSO_IMPORT_DIR: "/models"
       volumes:
         - models:/models
+      command: /virtuoso/git_import.sh
 
 volumes:
     libvirtodbc: {}
