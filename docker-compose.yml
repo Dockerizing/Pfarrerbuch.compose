@@ -59,7 +59,6 @@ services:
         - variables.env
       environment:
         VIRTUOSO_DATA_DIR: "/models"
-        GIT_DIRECTORY: "/git_models"
       volumes:
         - models:/models
         - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
