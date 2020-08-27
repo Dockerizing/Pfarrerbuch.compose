@@ -65,6 +65,22 @@ services:
         - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
       command: /virtuoso/git_import.sh
 
+    exporter:
+      image: aksw/dld-load-virtuoso
+      container_name: pfarrerbuch_exporter
+      depends_on:
+        - "virtuoso"
+      env_file:
+        - variables.env
+      environment:
+        VIRTUOSO_DATA_DIR: "/models"
+      volumes:
+        - models:/models
+        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
+        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
+      command: /virtuoso/git_dump.sh
+
+
 volumes:
     libvirtodbc: {}
     ontowiki: {}
