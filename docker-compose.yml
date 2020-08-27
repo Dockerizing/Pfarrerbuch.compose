@@ -74,11 +74,13 @@ services:
         - variables.env
       environment:
         VIRTUOSO_DATA_DIR: "/models"
+        CRON_JOB: "dump"
+        CRON_TIMES: "5,20,35,50 * * * *"
       volumes:
         - models:/models
         - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
         - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
-      command: /virtuoso/git_dump.sh
+      command: /virtuoso/envsetter.sh
 
 
 volumes:
