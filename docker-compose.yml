@@ -13,7 +13,7 @@ services:
         - libvirtodbc:/usr/local/virtuoso-opensource/lib
         - models:/models
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:8890/"]
+        test: wget --spider --server-response --tries=1 http://localhost:8890/ 2>&1 | grep "HTTP/" | awk '{print $2}' | tail -n 1 | xargs -I % test % -eq "200"
         interval: 1m30s
         timeout: 10s
         retries: 3
