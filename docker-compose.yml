@@ -4,6 +4,7 @@ services:
     virtuoso:
       image: aksw/virtuoso-backport:v1.1.0-virtuoso7.2.4-patch
       container_name: pfarrerbuch_virtuoso
+      restart: unless-stopped
       env_file:
         - variables.env
       environment:
@@ -22,6 +23,7 @@ services:
     phpserver:
       image: aksw/php-5.6-fpm-odbc-virtuoso
       container_name: pfarrerbuch_php
+      restart: unless-stopped
       volumes:
         - ontowiki:/var/www/html/
         - libvirtodbc:/usr/local/virtuoso-opensource/lib
@@ -32,6 +34,7 @@ services:
     nginx:
       image: aksw/nginx-ontowiki
       container_name: pfarrerbuch_nginx
+      restart: unless-stopped
       volumes:
         - ontowiki:/var/www/html/
       links:
@@ -42,6 +45,7 @@ services:
     ontowiki:
       image: aksw/pfarrerbuch-dockerizing
       container_name: pfarrerbuch_ontowiki
+      restart: unless-stopped
       env_file:
         - variables.env
       volumes:
@@ -68,6 +72,7 @@ services:
     exporter:
       image: aksw/dld-load-virtuoso
       container_name: pfarrerbuch_exporter
+      restart: unless-stopped
       depends_on:
         - "virtuoso"
       env_file:
