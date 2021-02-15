@@ -24,7 +24,14 @@ inside the directory. The OntoWiki setup is available at `http://localhost:8080/
 
 ## Variables
 
-Are stored in the file `variables.env`.
+Variables are read from the file `variables.env`.
+The repository has a file called `variables.env.dist` which can be used as a basis to create a `variables.env` file.
+There is a difference between variables that are available to the containers and those that are available within the `docker-compose.yml`.
+For convenience in this project we use the same variable files for both, so you need to run docker-compose as follows:
+
+    docker-compose --env-file variables.env up -d
+
+More info: https://docs.docker.com/compose/environment-variables/
 
 ## Volumes
 
@@ -34,7 +41,7 @@ Because the `volumes_from` was removed in docker-compoese v2 sit setup now uses 
 
 `virtuoso` provides the libvirtodbc and other libraries in `/usr/local/virtuoso-opensource/lib` which is mounted to `phpserver`.
 
-The ssh-agent socket, the known_hosts file and the volume `models` should come from the host.
+The ssh-key, the known_hosts file and the volume `models` should come from the host.
 
 ```
 ontowiki
@@ -46,11 +53,12 @@ virtuoso
                                      └─> phpserver
 
 HOST
-- ${SSH_AUTH_SOCK} ─> ontowiki
-- /data/pfarrerbuch/ssh/known_hosts (file) ─> ontowiki
-- /data/pfarrerbuch/models ─> as volume models ┬─> ontowiki
-                                               ├─> phpserver
-                                               └─> virtuoso
+- ${DATA_HOME}/ssh/id_rsa (file) ─> ontowiki
+- ${DATA_HOME}/ssh/id_rsa.pub (file) ─> ontowiki
+- ${DATA_HOME}/ssh/known_hosts (file) ─> ontowiki
+- ${DATA_HOME}/models ─> as volume models ┬─> ontowiki
+                                          ├─> phpserver
+                                          └─> virtuoso
 ```
 
 ## Further information
@@ -63,6 +71,10 @@ Read:
 - https://github.com/wwalker/ssh-find-agent
 
 The script should be installed at the end of `~/.bashrc` or `~/.zshrc` .
+
+### SSH Auth Sock
+
+**Somehow this does not work :-(**
 
 So start the ssh-agent or get the environment (`$SSH_AUTH_SOCK` and `$SSH_AGENT_PID`) for the currently running agent also the following has to be added to `~/.bashrc` resp. `~/.zshrc`.
 

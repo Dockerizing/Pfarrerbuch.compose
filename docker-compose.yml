@@ -40,7 +40,7 @@ services:
       links:
         - phpserver
       ports:
-        - "8080:80"
+        - "${PUBLIC_PORT}:80"
 
     ontowiki:
       image: aksw/pfarrerbuch-dockerizing
@@ -65,8 +65,9 @@ services:
         VIRTUOSO_DATA_DIR: "/models"
       volumes:
         - models:/models
-        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
-        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
+        - ${DATA_HOME}/ssh/known_hosts:/root/.ssh/known_hosts
+        - ${DATA_HOME}/ssh/id_rsa:/root/.ssh/id_rsa
+        - ${DATA_HOME}/ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
       command: /virtuoso/git_import.sh
 
     exporter:
@@ -83,8 +84,9 @@ services:
         CRON_TIMES: "5,20,35,50 * * * *"
       volumes:
         - models:/models
-        - /data/pfarrerbuch/ssh/known_hosts:/root/.ssh/known_hosts
-        - ${SSH_AUTH_SOCK}:/var/run/ssh-agent.sock
+        - ${DATA_HOME}/ssh/known_hosts:/root/.ssh/known_hosts
+        - ${DATA_HOME}/ssh/id_rsa:/root/.ssh/id_rsa
+        - ${DATA_HOME}/ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
       command: /virtuoso/envsetter.sh
 
 
