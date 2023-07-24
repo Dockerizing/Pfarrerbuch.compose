@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List all tasks
+    cmds:
+      - task -a
+
+  run:
+    desc: Start the docker-compose setup
+    cmds:
+      - docker-compose --env-file variables.env up -d
