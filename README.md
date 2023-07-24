@@ -15,23 +15,18 @@ To authenticate the container to clone from a remote git repository it expects a
 The socket of the host should be specified in the environment variable `SSH_AUTH_SOCK` available during the docker-compose setup.
 You can find more information about how to manage the ssh-agent at the end of the document.
 
-
-If you already have a running docker daemon and docker-compose just clone this repository and run
-
-    docker-compose up
-
-inside the directory. The OntoWiki setup is available at `http://localhost:8080/`.
-
-## Variables
+## Setup Variables and Run
 
 Variables are read from the file `variables.env`.
 The repository has a file called `variables.env.dist` which can be used as a basis to create a `variables.env` file.
 There is a difference between variables that are available to the containers and those that are available within the `docker-compose.yml`.
+More info: https://docs.docker.com/compose/environment-variables/ .
+
 For convenience in this project we use the same variable files for both, so you need to run docker-compose as follows:
 
     docker-compose --env-file variables.env up -d
 
-More info: https://docs.docker.com/compose/environment-variables/
+inside the directory. The OntoWiki setup is available at `http://localhost:8080/`.
 
 ## Volumes
 
